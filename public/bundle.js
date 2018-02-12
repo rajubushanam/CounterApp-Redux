@@ -60,76 +60,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 7);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_redux__ = __webpack_require__(8);
-
-
-console.log("Redux Store");
-
-//Action is an object to change the state and is sent to the store. action is passed as a second parameter to the createStore method. When an action is dispatched
-//the createStore method is called everytime.
-
-const store = Object(__WEBPACK_IMPORTED_MODULE_0_redux__["a" /* createStore */])((state = { count: 0 }, action) => {
-  switch (action.type) {
-    case "INCREMENT":
-    const incrementBy = typeof action.incrementBy === 'number' ? action.incrementBy : 1;
-      return {
-        count: state.count + incrementBy
-      };
-    case "DECREMENT":
-    const decrementBy = typeof action.decrementBy === 'number' ? action.decrementBy : 1;
-      return {
-        count: state.count - decrementBy
-      };
-    case "RESET":
-      return {
-        count: 0
-      };
-    default:
-      return state;
-  }
-});
-
-const unsubscribe = store.subscribe(() => {
-    console.log(store.getState());
-});
-
-//type is a mandatory property to be defined for redux store to understand the type of dispatch
-
-store.dispatch({
-  type: "INCREMENT",
-  incrementBy: 5
-});
-
-store.dispatch({
-  type: "INCREMENT"
-});
-
-//UNSUBSCRIBE will unsubscribe from state changes so any dispatching done after this method will not call subscribe
-//unsubscribe();
-
-store.dispatch({
-  type: "RESET"
-});
-
-store.dispatch({
-  type: "DECREMENT",
-  decrementBy: 10
-});
-
-//onsole.log(store.getState());
-
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -319,13 +254,13 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 2 */
+/* 1 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ActionTypes; });
 /* harmony export (immutable) */ __webpack_exports__["b"] = createStore;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_es_isPlainObject__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_es_isPlainObject__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_symbol_observable__ = __webpack_require__(17);
 
 
@@ -577,7 +512,7 @@ var ActionTypes = {
 }
 
 /***/ }),
-/* 3 */
+/* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -649,7 +584,7 @@ function isPlainObject(value) {
 
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -663,7 +598,7 @@ var Symbol = __WEBPACK_IMPORTED_MODULE_0__root_js__["a" /* default */].Symbol;
 
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports) {
 
 var g;
@@ -690,7 +625,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -718,7 +653,7 @@ function warning(message) {
 }
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -757,16 +692,109 @@ function compose() {
 }
 
 /***/ }),
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_redux__ = __webpack_require__(8);
+
+
+console.log("Redux Store");
+
+//Action is an object to change the state and is sent to the store. action is passed as a second parameter to the createStore method. When an action is dispatched
+//the createStore method is called everytime.
+
+//Action generators are functions that contain the Action types defined in them so the dispatch methods doesnt need to define the plain object everytime,
+//it can just call the Action generator.
+
+const incrementCount = ({ incrementBy = 1 } = {}) => ({
+  type: "INCREMENT",
+  incrementBy: incrementBy
+});
+
+const decrementCount = ({ decrementBy = 1 } = {}) => ({
+  type: "DECREMENT",
+  decrementBy: decrementBy
+});
+
+const setCount = ({count}) => ({
+  type: "SET",
+  count: count
+});
+
+const resetCount = () => ({
+  type: "RESET"
+});
+
+const store = Object(__WEBPACK_IMPORTED_MODULE_0_redux__["a" /* createStore */])((state = { count: 0 }, action) => {
+  switch (action.type) {
+    case "INCREMENT":
+      //   const incrementBy =
+      //     typeof action.incrementBy === "number" ? action.incrementBy : 1;
+      return {
+        count: state.count + action.incrementBy
+      };
+    case "DECREMENT":
+      //   const decrementBy =
+      //     typeof action.decrementBy === "number" ? action.decrementBy : 1;
+      return {
+        count: state.count - action.decrementBy
+      };
+    case "SET":
+      return {
+        count: action.count
+      };
+    case "RESET":
+      return {
+        count: 0
+      };
+    default:
+      return state;
+  }
+});
+
+const unsubscribe = store.subscribe(() => {
+  console.log(store.getState());
+});
+
+//type is a mandatory property to be defined for redux store to understand the type of dispatch
+
+store.dispatch(incrementCount({ incrementBy: 5 }));
+
+store.dispatch(incrementCount());
+
+// store.dispatch({
+//   type: "INCREMENT"
+// });
+
+//UNSUBSCRIBE will unsubscribe from state changes so any dispatching done after this method will not call subscribe
+//unsubscribe();
+
+// store.dispatch({
+//     type: "SET",
+//     count: 101
+// });
+store.dispatch(setCount({ count: 101 }));
+
+store.dispatch(resetCount());
+
+store.dispatch(decrementCount({ decrementBy: 10 }));
+
+//onsole.log(store.getState());
+
+
+/***/ }),
 /* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(process) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__createStore__ = __webpack_require__(2);
+/* WEBPACK VAR INJECTION */(function(process) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__createStore__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__combineReducers__ = __webpack_require__(20);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__bindActionCreators__ = __webpack_require__(21);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__applyMiddleware__ = __webpack_require__(22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__compose__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_warning__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__compose__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_warning__ = __webpack_require__(5);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__createStore__["b"]; });
 /* unused harmony reexport combineReducers */
 /* unused harmony reexport bindActionCreators */
@@ -790,14 +818,14 @@ if (process.env.NODE_ENV !== 'production' && typeof isCrushed.name === 'string' 
 }
 
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
 
 /***/ }),
 /* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Symbol_js__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Symbol_js__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__getRawTag_js__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__objectToString_js__ = __webpack_require__(13);
 
@@ -857,14 +885,14 @@ var freeGlobal = typeof global == 'object' && global && global.Object === Object
 
 /* harmony default export */ __webpack_exports__["a"] = (freeGlobal);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(4)))
 
 /***/ }),
 /* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Symbol_js__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Symbol_js__ = __webpack_require__(3);
 
 
 /** Used for built-in method references. */
@@ -1040,7 +1068,7 @@ if (typeof self !== 'undefined') {
 var result = Object(__WEBPACK_IMPORTED_MODULE_0__ponyfill_js__["a" /* default */])(root);
 /* harmony default export */ __webpack_exports__["a"] = (result);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(5), __webpack_require__(18)(module)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(4), __webpack_require__(18)(module)))
 
 /***/ }),
 /* 18 */
@@ -1103,9 +1131,9 @@ function symbolObservablePonyfill(root) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {/* unused harmony export default */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__createStore__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_es_isPlainObject__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_warning__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__createStore__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_es_isPlainObject__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_warning__ = __webpack_require__(5);
 
 
 
@@ -1236,7 +1264,7 @@ function combineReducers(reducers) {
     return hasChanged ? nextState : state;
   };
 }
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
 
 /***/ }),
 /* 21 */
@@ -1298,7 +1326,7 @@ function bindActionCreators(actionCreators, dispatch) {
 
 "use strict";
 /* unused harmony export default */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__compose__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__compose__ = __webpack_require__(6);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 

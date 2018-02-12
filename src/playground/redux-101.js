@@ -5,17 +5,45 @@ console.log("Redux Store");
 //Action is an object to change the state and is sent to the store. action is passed as a second parameter to the createStore method. When an action is dispatched
 //the createStore method is called everytime.
 
+//Action generators are functions that contain the Action types defined in them so the dispatch methods doesnt need to define the plain object everytime,
+//it can just call the Action generator.
+
+const incrementCount = ({ incrementBy = 1 } = {}) => ({
+  type: "INCREMENT",
+  incrementBy: incrementBy
+});
+
+const decrementCount = ({ decrementBy = 1 } = {}) => ({
+  type: "DECREMENT",
+  decrementBy: decrementBy
+});
+
+const setCount = ({count}) => ({
+  type: "SET",
+  count: count
+});
+
+const resetCount = () => ({
+  type: "RESET"
+});
+
 const store = createStore((state = { count: 0 }, action) => {
   switch (action.type) {
     case "INCREMENT":
-    const incrementBy = typeof action.incrementBy === 'number' ? action.incrementBy : 1;
+      //   const incrementBy =
+      //     typeof action.incrementBy === "number" ? action.incrementBy : 1;
       return {
-        count: state.count + incrementBy
+        count: state.count + action.incrementBy
       };
     case "DECREMENT":
-    const decrementBy = typeof action.decrementBy === 'number' ? action.decrementBy : 1;
+      //   const decrementBy =
+      //     typeof action.decrementBy === "number" ? action.decrementBy : 1;
       return {
-        count: state.count - decrementBy
+        count: state.count - action.decrementBy
+      };
+    case "SET":
+      return {
+        count: action.count
       };
     case "RESET":
       return {
@@ -27,30 +55,30 @@ const store = createStore((state = { count: 0 }, action) => {
 });
 
 const unsubscribe = store.subscribe(() => {
-    console.log(store.getState());
+  console.log(store.getState());
 });
 
 //type is a mandatory property to be defined for redux store to understand the type of dispatch
 
-store.dispatch({
-  type: "INCREMENT",
-  incrementBy: 5
-});
+store.dispatch(incrementCount({ incrementBy: 5 }));
 
-store.dispatch({
-  type: "INCREMENT"
-});
+store.dispatch(incrementCount());
+
+// store.dispatch({
+//   type: "INCREMENT"
+// });
 
 //UNSUBSCRIBE will unsubscribe from state changes so any dispatching done after this method will not call subscribe
 //unsubscribe();
 
-store.dispatch({
-  type: "RESET"
-});
+// store.dispatch({
+//     type: "SET",
+//     count: 101
+// });
+store.dispatch(setCount({ count: 101 }));
 
-store.dispatch({
-  type: "DECREMENT",
-  decrementBy: 10
-});
+store.dispatch(resetCount());
+
+store.dispatch(decrementCount({ decrementBy: 10 }));
 
 //onsole.log(store.getState());
